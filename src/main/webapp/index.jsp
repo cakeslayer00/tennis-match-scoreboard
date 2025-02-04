@@ -1,20 +1,24 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: vladsv
-  Date: 2/3/2025
-  Time: 2:10 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Tennis Scoreboard Service</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Names Form</title>
 </head>
 <body>
-<form action="${pageContext.request.contextPath}/new-match" method="post">
-    <label>Player 1: <input type="text" name="firstPlayer"></label><br>
-    <label>Player 2: <input type="text" name="secondPlayer"></label><br>
-    <input type="submit">
+<h1>Enter Player Names</h1>
+<form action="${pageContext.request.contextPath}/new-match" method="POST">
+    <label for="playerOne">Player One:</label>
+    <input type="text" id="playerOne" name="firstPlayer" required>
+    <br>
+    <label for="playerTwo">Player Two:</label>
+    <input type="text" id="playerTwo" name="secondPlayer" required>
+    <br>
+    <input type="submit" value="Submit">
 </form>
+
+<% if (request.getAttribute("error") != null) { %>
+<p style="color: #ff0000;"><%= request.getAttribute("error") %></p>
+<% } %>
 </body>
 </html>

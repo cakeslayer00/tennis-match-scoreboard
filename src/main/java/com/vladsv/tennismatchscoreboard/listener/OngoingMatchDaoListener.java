@@ -1,28 +1,26 @@
 package com.vladsv.tennismatchscoreboard.listener;
 
-import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
+import com.vladsv.tennismatchscoreboard.dao.OngoingMatchDao;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @WebListener
-public class OngoingMatchCollectionListener implements ServletContextListener {
+public class OngoingMatchDaoListener implements ServletContextListener {
 
-    private Map<UUID, OngoingMatch> matches;
+    private OngoingMatchDao ongoingMatchDao;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        matches = new HashMap<>();
-        sce.getServletContext().setAttribute("ongoingMatches", matches);
+        ongoingMatchDao = new OngoingMatchDao(new HashMap<>());
+        sce.getServletContext().setAttribute("ongoingMatchDao", ongoingMatchDao);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        matches = null;
+        ongoingMatchDao = null;
     }
 
 }
