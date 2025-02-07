@@ -9,10 +9,10 @@
 <h1>Enter Player Names</h1>
 <form action="${pageContext.request.contextPath}/new-match" method="POST">
     <label for="playerOne">Player One:</label>
-    <input type="text" id="playerOne" name="firstPlayer" required>
+    <input type="text" id="playerOne" name="firstPlayer" placeholder="Amigo" required>
     <br>
     <label for="playerTwo">Player Two:</label>
-    <input type="text" id="playerTwo" name="secondPlayer" required>
+    <input type="text" id="playerTwo" name="secondPlayer" placeholder="Pedro" required>
     <br>
     <input type="submit" value="Submit">
 </form>

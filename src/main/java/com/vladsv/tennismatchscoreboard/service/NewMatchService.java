@@ -28,7 +28,7 @@ public class NewMatchService {
         OngoingMatch ongoingMatch = OngoingMatch.builder()
                 .firstPlayerId(firstPlayer.getId())
                 .secondPlayerId(secondPlayer.getId())
-                .score(new Score(new HashMap<>()))
+                .score(new Score())
                 .build();
 
         ongoingMatchDao.persist(matchId, ongoingMatch);

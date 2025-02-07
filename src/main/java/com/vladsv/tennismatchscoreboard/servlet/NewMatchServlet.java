@@ -32,18 +32,18 @@ public class NewMatchServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String firstPlayerName = req.getParameter("firstPlayer");
-        String secondPlayerName = req.getParameter("secondPlayer");
+        String firstPlayerName = req.getParameter("firstPlayer").toLowerCase();
+        String secondPlayerName = req.getParameter("secondPlayer").toLowerCase();
 
-        if (firstPlayerName.equalsIgnoreCase(secondPlayerName)) {
+        if (firstPlayerName.equals(secondPlayerName)) {
             req.setAttribute("error", "Player names cannot be the same!");
             req.getRequestDispatcher("index.jsp").forward(req, resp);
         }
 
         UUID uuid = UUID.randomUUID();
         NewMatchRequestDto requestDto = NewMatchRequestDto.builder()
-                .firstPlayerName(firstPlayerName.toLowerCase())
-                .secondPlayerName(secondPlayerName.toLowerCase())
+                .firstPlayerName(firstPlayerName)
+                .secondPlayerName(secondPlayerName)
                 .build();
 
         service.initiateNewMatch(uuid, requestDto);
