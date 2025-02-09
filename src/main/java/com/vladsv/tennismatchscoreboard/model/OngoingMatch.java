@@ -11,7 +11,6 @@ public class OngoingMatch {
 
     private Long firstPlayerId;
     private Long secondPlayerId;
-    private Long winnerId;
     private MatchState matchState;
     private Score score;
 

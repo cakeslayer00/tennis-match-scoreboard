@@ -12,17 +12,25 @@ public class Score {
     @Getter
     @Setter
     public static class PlayerScore {
-        private int wonSets = 0;
-        private int wonGames = 0;
+        private int sets = 0;
+        private int games = 0;
         private int tieBreakCounter = 0;
-        private Point currentPoint = Point.ZERO;
+        private Point point = Point.ZERO;
 
         private PlayerScore() {
         }
 
-        public void incrementWonGamesCount() {wonGames++;}
-        public void incrementWonSetsCount() {wonSets++;}
-        public void incrementTieBreakCounter() {tieBreakCounter++;}
+        public void increaseGamesCounter() {
+            games++;
+        }
+
+        public void increaseSetsCounter() {
+            sets++;
+        }
+
+        public void increaseTieBreakCounter() {
+            tieBreakCounter++;
+        }
     }
 
     private Map<String, PlayerScore> playerScoreMap;

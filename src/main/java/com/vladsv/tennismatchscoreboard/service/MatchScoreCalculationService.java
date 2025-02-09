@@ -1,6 +1,5 @@
 package com.vladsv.tennismatchscoreboard.service;
 
-import com.vladsv.tennismatchscoreboard.dao.OngoingMatchDao;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import com.vladsv.tennismatchscoreboard.model.Score;
 import com.vladsv.tennismatchscoreboard.model.MatchState;
@@ -9,72 +8,62 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 public class MatchScoreCalculationService {
 
-    private final OngoingMatchDao ongoingMatchDao;
-
-    public void updateScore(UUID matchId, String winnerId) {
+    public void updateScore(OngoingMatch ongoingMatch, String winnerId) {
         if (!winnerId.matches("[1-2]+")) {
             throw new IllegalArgumentException("Invalid winner id");
         }
 
-        OngoingMatch ongoingMatch = ongoingMatchDao.findById(matchId).orElseThrow(
-                () -> new RuntimeException("Could not find match with id " + matchId)
-        );
         Score matchScore = ongoingMatch.getScore();
         Score.PlayerScore winnerScore = matchScore.getPlayerScoreMap().get(winnerId);
-        Point winnerPoint = winnerScore.getCurrentPoint();
+        Point winnerPoint = winnerScore.getPoint();
 
         switch (ongoingMatch.getMatchState()) {
             case ONGOING -> {
                 if (winnerPoint.equals(Point.FORTY)) {
-                    winnerScore.incrementWonGamesCount();
+                    winnerScore.increaseGamesCounter();
                     setPlayersPoint(matchScore, Point.ZERO);
                 } else {
-                    winnerScore.setCurrentPoint(winnerPoint.next());
+                    winnerScore.setPoint(winnerPoint.next());
                 }
             }
             case DEUCE -> {
                 if (!hasOpponentAdvantage(matchScore, winnerId)) {
                     if (winnerPoint.equals(Point.ADVANTAGE)) {
-                        winnerScore.incrementWonGamesCount();
+                        winnerScore.increaseGamesCounter();
                         setPlayersPoint(matchScore, Point.ZERO);
                         ongoingMatch.setMatchState(MatchState.ONGOING);
                     } else {
-                        winnerScore.setCurrentPoint(winnerPoint.next());
+                        winnerScore.setPoint(winnerPoint.next());
                     }
                 } else {
                     setPlayersPoint(matchScore, Point.FORTY);
                 }
             }
             case TIE_BREAK -> {
+                winnerScore.increaseTieBreakCounter();
                 if (hasPlayerWonTieBreak(matchScore, winnerId)) {
-                    winnerScore.incrementWonSetsCount();
+                    winnerScore.increaseSetsCounter();
                     resetPlayersWonGames(matchScore);
                     resetPlayersPoint(matchScore);
                     ongoingMatch.setMatchState(MatchState.ONGOING);
-                } else {
-                    winnerScore.incrementTieBreakCounter();
                 }
             }
         }
 
         if (hasPlayerWonSet(matchScore, winnerId)) {
-            winnerScore.incrementWonSetsCount();
+            winnerScore.increaseSetsCounter();
+            resetPlayersTieBreakCounters(matchScore);
             resetPlayersWonGames(matchScore);
             resetPlayersPoint(matchScore);
             ongoingMatch.setMatchState(MatchState.ONGOING);
         }
     }
 
-    public void updateMatchState(UUID matchId) {
-        OngoingMatch ongoingMatch = ongoingMatchDao.findById(matchId).orElseThrow(
-                () -> new RuntimeException("Could not find match with id " + matchId)
-        );
-
+    public void updateMatchState(OngoingMatch ongoingMatch) {
         if (isDeuce(ongoingMatch.getScore())) {
             ongoingMatch.setMatchState(MatchState.DEUCE);
         }
@@ -84,12 +73,10 @@ public class MatchScoreCalculationService {
         }
     }
 
-    public boolean hasPlayerWonMatch(UUID matchId , String winnerId) {
-        OngoingMatch ongoingMatch = ongoingMatchDao.findById(matchId).orElseThrow(
-                () -> new RuntimeException("Could not find match with id " + matchId)
-        );
-
-        return ongoingMatch.getScore().getPlayerScoreMap().get(winnerId).getWonSets() >= 2;
+    public boolean isMatchFinished(OngoingMatch ongoingMatch) {
+        return ongoingMatch.getScore().getPlayerScoreMap().entrySet().stream().filter(
+                entry -> entry.getValue().getSets() >= 2
+        ).findFirst().orElse(null) != null;
     }
 
     public boolean isTieBreak(Score score) {
@@ -97,8 +84,8 @@ public class MatchScoreCalculationService {
         Score.PlayerScore firstPlayerScore = playerScoreMap.get("1");
         Score.PlayerScore secondPlayerScore = playerScoreMap.get("2");
 
-        int diff = Math.abs(firstPlayerScore.getWonGames() - secondPlayerScore.getWonGames());
-        return diff == 0 && firstPlayerScore.getWonGames() == 6;
+        int diff = Math.abs(firstPlayerScore.getGames() - secondPlayerScore.getGames());
+        return diff == 0 && firstPlayerScore.getGames() == 6;
     }
 
     private boolean isDeuce(Score score) {
@@ -106,8 +93,8 @@ public class MatchScoreCalculationService {
 
         Score.PlayerScore firstPlayerScore = playerScoreMap.get("1");
         Score.PlayerScore secondPlayerScore = playerScoreMap.get("2");
-        Point firstPlayerPoint = firstPlayerScore.getCurrentPoint();
-        Point secondPlayerPoint = secondPlayerScore.getCurrentPoint();
+        Point firstPlayerPoint = firstPlayerScore.getPoint();
+        Point secondPlayerPoint = secondPlayerScore.getPoint();
 
         return firstPlayerPoint.equals(secondPlayerPoint) && firstPlayerPoint.equals(Point.FORTY);
     }
@@ -116,7 +103,7 @@ public class MatchScoreCalculationService {
         return score.getPlayerScoreMap().entrySet()
                 .stream().filter(
                         entry -> !Objects.equals(entry.getKey(), winner)
-                ).findFirst().orElseThrow().getValue().getCurrentPoint().equals(Point.ADVANTAGE);
+                ).findFirst().orElseThrow().getValue().getPoint().equals(Point.ADVANTAGE);
     }
 
     private boolean hasPlayerWonTieBreak(Score score, String winner) {
@@ -139,16 +126,24 @@ public class MatchScoreCalculationService {
                         entry -> !Objects.equals(entry.getKey(), winner)
                 ).findFirst().orElseThrow().getValue();
 
-        int diff = Math.abs(winnerScore.getWonGames() - opponentScore.getWonGames());
-        return diff >= 2 && winnerScore.getWonGames() >= 6;
+        int diff = Math.abs(winnerScore.getGames() - opponentScore.getGames());
+        return diff >= 2 && winnerScore.getGames() >= 6;
     }
 
     private void setPlayersPoint(Score score, Point point) {
-        score.getPlayerScoreMap().forEach((currentPoint, scorePlayerScore) -> scorePlayerScore.setCurrentPoint(point));
+        score.getPlayerScoreMap().forEach((currentPoint, scorePlayerScore) -> scorePlayerScore.setPoint(point));
+    }
+
+    private void resetPlayersTieBreakCounters(Score score) {
+        score.getPlayerScoreMap().forEach(
+                (currentPoint, scorePlayerScore) -> scorePlayerScore.setTieBreakCounter(0)
+        );
     }
 
     private void resetPlayersWonGames(Score score) {
-        score.getPlayerScoreMap().forEach((currentPoint, scorePlayerScore) -> scorePlayerScore.setWonGames(0));
+        score.getPlayerScoreMap().forEach(
+                (currentPoint, scorePlayerScore) -> scorePlayerScore.setGames(0)
+        );
     }
 
     private void resetPlayersPoint(Score score) {

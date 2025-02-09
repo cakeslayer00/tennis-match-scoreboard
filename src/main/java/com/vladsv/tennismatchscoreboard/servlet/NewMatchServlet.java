@@ -23,7 +23,7 @@ public class NewMatchServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        SessionFactory sessionFactory = (SessionFactory) getServletContext().getAttribute("hibernate.session_factory");
+        SessionFactory sessionFactory = (SessionFactory) getServletContext().getAttribute("hibernateSessionFactory");
 
         PlayerDao playerDao = new PlayerDao(sessionFactory);
         OngoingMatchDao ongoingMatchDao = (OngoingMatchDao) getServletContext().getAttribute("ongoingMatchDao");

@@ -27,7 +27,7 @@ public class HibernateInitializeListener implements ServletContextListener {
                     .buildMetadata()
                     .buildSessionFactory();
 
-            sce.getServletContext().setAttribute("hibernate.session_factory", sessionFactory);
+            sce.getServletContext().setAttribute("hibernateSessionFactory", sessionFactory);
         } catch (Exception e) {
             StandardServiceRegistryBuilder.destroy(registry);
         }
