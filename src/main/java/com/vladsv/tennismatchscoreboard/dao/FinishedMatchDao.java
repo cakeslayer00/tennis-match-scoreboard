@@ -7,11 +7,11 @@ import org.hibernate.SessionFactory;
 import java.util.List;
 import java.util.Optional;
 
-public class MatchDao implements Dao<FinishedMatch> {
+public class FinishedMatchDao implements Dao<FinishedMatch> {
 
     private final SessionFactory sessionFactory;
 
-    public MatchDao(SessionFactory sessionFactory) {
+    public FinishedMatchDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -37,5 +37,12 @@ public class MatchDao implements Dao<FinishedMatch> {
         Session session = sessionFactory.openSession();
         return session.
                 createSelectionQuery("from FinishedMatch", FinishedMatch.class).getResultList();
+    }
+
+    @Override
+    public void delete(FinishedMatch match) {
+        sessionFactory.inTransaction(session -> {
+            session.remove(match);
+        });
     }
 }

@@ -35,4 +35,14 @@ public class OngoingMatchDao implements Dao<OngoingMatch> {
         return new ArrayList<>(matches.values());
     }
 
+    @Deprecated
+    @Override
+    public void delete(OngoingMatch match) {
+        matches.entrySet().removeIf(entry -> entry.getValue().equals(match));
+    }
+
+    public void delete(UUID id) {
+        matches.remove(id);
+    }
+
 }

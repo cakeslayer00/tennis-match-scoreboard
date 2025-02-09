@@ -6,9 +6,9 @@ import com.vladsv.tennismatchscoreboard.dto.NewMatchRequestDto;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import com.vladsv.tennismatchscoreboard.model.Player;
 import com.vladsv.tennismatchscoreboard.model.Score;
+import com.vladsv.tennismatchscoreboard.model.MatchState;
 import lombok.RequiredArgsConstructor;
 
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,6 +28,7 @@ public class NewMatchService {
         OngoingMatch ongoingMatch = OngoingMatch.builder()
                 .firstPlayerId(firstPlayer.getId())
                 .secondPlayerId(secondPlayer.getId())
+                .matchState(MatchState.ONGOING)
                 .score(new Score())
                 .build();
 

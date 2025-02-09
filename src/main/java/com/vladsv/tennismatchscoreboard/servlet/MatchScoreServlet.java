@@ -1,7 +1,6 @@
 package com.vladsv.tennismatchscoreboard.servlet;
 
 import com.vladsv.tennismatchscoreboard.dao.OngoingMatchDao;
-import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import com.vladsv.tennismatchscoreboard.service.MatchScoreCalculationService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -16,20 +15,22 @@ import java.util.UUID;
 @WebServlet(value = "/match-score")
 public class MatchScoreServlet extends HttpServlet {
 
-    private OngoingMatchDao ongoingMatchDao;
     private MatchScoreCalculationService calculationService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        ongoingMatchDao = (OngoingMatchDao) getServletContext().getAttribute("ongoingMatchDao");
-        calculationService = new MatchScoreCalculationService();
+        OngoingMatchDao ongoingMatchDao = (OngoingMatchDao) getServletContext()
+                .getAttribute("ongoingMatchDao");
+        calculationService = new MatchScoreCalculationService(ongoingMatchDao);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UUID uuid = UUID.fromString(req.getParameter("uuid"));
+
+
         req.setAttribute("uuid", uuid);
         req.getRequestDispatcher("WEB-INF/jsp/match.jsp").forward(req, resp);
     }
@@ -39,12 +40,10 @@ public class MatchScoreServlet extends HttpServlet {
         UUID matchId = UUID.fromString(req.getParameter("uuid"));
         String winnerId = req.getParameter("winnerId");
 
-        OngoingMatch ongoingMatch = ongoingMatchDao.findById(matchId).orElseThrow(
-                () -> new RuntimeException("Match not found")
-        );
-
-        calculationService.updateScore(ongoingMatch, winnerId);
+        calculationService.updateMatchState(matchId);
+        calculationService.updateScore(matchId, winnerId);
 
         resp.sendRedirect("/match-score?uuid=" + matchId);
     }
+
 }

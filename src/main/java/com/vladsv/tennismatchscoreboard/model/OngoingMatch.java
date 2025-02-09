@@ -1,6 +1,5 @@
 package com.vladsv.tennismatchscoreboard.model;
 
-import com.vladsv.tennismatchscoreboard.utils.MatchState;
 import lombok.*;
 
 @Builder
@@ -12,6 +11,7 @@ public class OngoingMatch {
 
     private Long firstPlayerId;
     private Long secondPlayerId;
+    private Long winnerId;
     private MatchState matchState;
     private Score score;
 

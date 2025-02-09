@@ -5,7 +5,7 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 @WebListener
 public class OngoingMatchDaoListener implements ServletContextListener {
@@ -14,7 +14,7 @@ public class OngoingMatchDaoListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ongoingMatchDao = new OngoingMatchDao(new HashMap<>());
+        ongoingMatchDao = new OngoingMatchDao(new ConcurrentHashMap<>());
         sce.getServletContext().setAttribute("ongoingMatchDao", ongoingMatchDao);
     }
 

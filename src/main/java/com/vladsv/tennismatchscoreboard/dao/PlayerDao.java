@@ -1,5 +1,6 @@
 package com.vladsv.tennismatchscoreboard.dao;
 
+import com.vladsv.tennismatchscoreboard.model.FinishedMatch;
 import com.vladsv.tennismatchscoreboard.model.Player;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -38,6 +39,13 @@ public class PlayerDao implements Dao<Player> {
                 createSelectionQuery("from Player", Player.class).getResultList();
     }
 
+    @Override
+    public void delete(Player player) {
+        sessionFactory.inTransaction(session -> {
+            session.remove(player);
+        });
+    }
+
     public Optional<Player> findByName(String name) {
         Session session = sessionFactory.openSession();
         Player player = session.createSelectionQuery("from Player where name = :name", Player.class)
@@ -46,4 +54,5 @@ public class PlayerDao implements Dao<Player> {
 
         return Optional.ofNullable(player);
     }
+
 }
