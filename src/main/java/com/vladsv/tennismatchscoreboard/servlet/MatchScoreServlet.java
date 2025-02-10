@@ -2,7 +2,6 @@ package com.vladsv.tennismatchscoreboard.servlet;
 
 import com.vladsv.tennismatchscoreboard.dao.impl.FinishedMatchDao;
 import com.vladsv.tennismatchscoreboard.dao.impl.OngoingMatchDao;
-import com.vladsv.tennismatchscoreboard.dao.impl.PlayerDao;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import com.vladsv.tennismatchscoreboard.service.FinishedMatchService;
 import com.vladsv.tennismatchscoreboard.service.MatchScoreCalculationService;
@@ -53,8 +52,6 @@ public class MatchScoreServlet extends HttpServlet {
                     () -> new IllegalArgumentException("Match with current id doesn't exist")
             );
 
-            req.setAttribute("firstPlayer", ongoingMatch.getFirstPlayer());
-            req.setAttribute("secondPlayer", ongoingMatch.getSecondPlayer());
             req.setAttribute("ongoingMatch", ongoingMatch);
             req.setAttribute("uuid", uuid);
             req.getRequestDispatcher("WEB-INF/jsp/match.jsp").forward(req, resp);
@@ -80,6 +77,7 @@ public class MatchScoreServlet extends HttpServlet {
             calculationService.updateScore(ongoingMatch, winnerId);
 
             if (ongoingMatch.isMatchFinished()) {
+                ongoingMatch.setWinnerPlayerId(Long.valueOf(winnerId));
                 finishedMatchService.proceedMatch(ongoingMatch);
                 ongoingMatchDao.delete(matchId);
 

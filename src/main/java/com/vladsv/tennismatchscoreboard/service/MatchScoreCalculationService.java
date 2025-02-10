@@ -1,9 +1,6 @@
 package com.vladsv.tennismatchscoreboard.service;
 
-import com.vladsv.tennismatchscoreboard.model.MatchState;
-import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
-import com.vladsv.tennismatchscoreboard.model.Point;
-import com.vladsv.tennismatchscoreboard.model.Score;
+import com.vladsv.tennismatchscoreboard.model.*;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
@@ -30,10 +27,7 @@ public class MatchScoreCalculationService {
         switch (ongoingMatch.getMatchState()) {
             case DEFAULT -> processOngoing(winnerScore, loserScore);
             case DEUCE -> onDeuce(winnerScore, loserScore);
-            case TIE_BREAK -> {
-                onTieBreak(winnerScore, loserScore);
-                return;
-            }
+            case TIE_BREAK -> onTieBreak(winnerScore, loserScore);
         }
 
         if (hasWonSet(winnerScore,loserScore)) {

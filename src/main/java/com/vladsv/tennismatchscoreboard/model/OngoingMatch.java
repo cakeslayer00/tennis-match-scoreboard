@@ -11,7 +11,7 @@ public class OngoingMatch {
 
     private Player firstPlayer;
     private Player secondPlayer;
-    private Player winnerId;
+    private Long winnerPlayerId;
     @Builder.Default
     private MatchState matchState = MatchState.DEFAULT;
     @Builder.Default

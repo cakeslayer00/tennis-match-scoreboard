@@ -17,9 +17,9 @@
         <th>action</th>
     </tr>
     <tr>
-        <td><c:out value="${requestScope.firstPlayer.name}"/></td>
-        <td><c:out value="${requestScope.ongoingMatch.firstPlayerScore.sets}"/></td>
-        <td><c:out value="${requestScope.ongoingMatch.firstPlayerScore.games}"/></td>
+        <td>${requestScope.ongoingMatch.firstPlayer.name}</td>
+        <td>${requestScope.ongoingMatch.firstPlayerScore.sets}/></td>
+        <td>${requestScope.ongoingMatch.firstPlayerScore.games}</td>
         <td>
             <c:choose>
                 <c:when test="${requestScope.ongoingMatch.tieBreak}">
@@ -33,15 +33,15 @@
         <td>
             <form action="${pageContext.request.contextPath}/match-score" method="post">
                 <input type="hidden" name="uuid" value="${requestScope.uuid}">
-                <input type="hidden" name="winnerId" value="${requestScope.firstPlayer.id}">
+                <input type="hidden" name="winnerId" value="${requestScope.ongoingMatch.firstPlayer.id}">
                 <button type="submit">add</button><br>
             </form>
         </td>
     </tr>
     <tr>
-        <td><c:out value="${requestScope.secondPlayer.name}"/></td>
-        <td><c:out value="${requestScope.ongoingMatch.secondPlayerScore.sets}"/></td>
-        <td><c:out value="${requestScope.ongoingMatch.secondPlayerScore.games}"/></td>
+        <td>${requestScope.ongoingMatch.secondPlayer.name}</td>
+        <td>${requestScope.ongoingMatch.secondPlayerScore.sets}/></td>
+        <td>${requestScope.ongoingMatch.secondPlayerScore.games}</td>
         <td>
             <c:choose>
                 <c:when test="${requestScope.ongoingMatch.tieBreak}">
@@ -55,7 +55,7 @@
         <td>
             <form action="${pageContext.request.contextPath}/match-score" method="post">
                 <input type="hidden" name="uuid" value="${requestScope.uuid}">
-                <input type="hidden" name="winnerId" value="${requestScope.secondPlayer.id}">
+                <input type="hidden" name="winnerId" value="${requestScope.ongoingMatch.secondPlayer.id}">
                 <button type="submit">add</button><br>
             </form>
         </td>
