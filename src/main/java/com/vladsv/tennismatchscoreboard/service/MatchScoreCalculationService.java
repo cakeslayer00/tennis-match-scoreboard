@@ -50,13 +50,14 @@ public class MatchScoreCalculationService {
     private void onDeuce(Score winnerScore, Score loserScore) {
         if (loserScore.getPoint().equals(Point.ADVANTAGE)) {
             resetToDeuce(winnerScore, loserScore);
+            return;
+        }
+
+        if (winnerScore.getPoint().equals(Point.ADVANTAGE)) {
+            winnerScore.incrementGames();
+            resetPoints(winnerScore,loserScore);
         } else {
-            if (winnerScore.getPoint().equals(Point.ADVANTAGE)) {
-                winnerScore.incrementGames();
-                resetPoints(winnerScore,loserScore);
-            } else {
-                winnerScore.incrementPoint();
-            }
+            winnerScore.incrementPoint();
         }
     }
 

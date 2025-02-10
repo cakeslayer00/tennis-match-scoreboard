@@ -18,7 +18,7 @@
     </tr>
     <tr>
         <td>${requestScope.ongoingMatch.firstPlayer.name}</td>
-        <td>${requestScope.ongoingMatch.firstPlayerScore.sets}/></td>
+        <td>${requestScope.ongoingMatch.firstPlayerScore.sets}</td>
         <td>${requestScope.ongoingMatch.firstPlayerScore.games}</td>
         <td>
             <c:choose>
@@ -40,7 +40,7 @@
     </tr>
     <tr>
         <td>${requestScope.ongoingMatch.secondPlayer.name}</td>
-        <td>${requestScope.ongoingMatch.secondPlayerScore.sets}/></td>
+        <td>${requestScope.ongoingMatch.secondPlayerScore.sets}</td>
         <td>${requestScope.ongoingMatch.secondPlayerScore.games}</td>
         <td>
             <c:choose>

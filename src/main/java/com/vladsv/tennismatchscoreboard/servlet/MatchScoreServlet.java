@@ -2,6 +2,7 @@ package com.vladsv.tennismatchscoreboard.servlet;
 
 import com.vladsv.tennismatchscoreboard.dao.impl.FinishedMatchDao;
 import com.vladsv.tennismatchscoreboard.dao.impl.OngoingMatchDao;
+import com.vladsv.tennismatchscoreboard.dto.OngoingMatchViewDto;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import com.vladsv.tennismatchscoreboard.service.FinishedMatchService;
 import com.vladsv.tennismatchscoreboard.service.MatchScoreCalculationService;
@@ -13,6 +14,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.SessionFactory;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -31,11 +34,11 @@ public class MatchScoreServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         SessionFactory sessionFactory = (SessionFactory)
-                config.getServletContext().getAttribute("hibernateSessionFactory");
+                getServletContext().getAttribute("hibernateSessionFactory");
 
         FinishedMatchDao finishedMatchDao = new FinishedMatchDao(sessionFactory);
         ongoingMatchDao = (OngoingMatchDao)
-                config.getServletContext().getAttribute("ongoingMatchDao");
+                getServletContext().getAttribute("ongoingMatchDao");
 
         calculationService = new MatchScoreCalculationService();
         finishedMatchService = new FinishedMatchService(finishedMatchDao);
@@ -54,7 +57,7 @@ public class MatchScoreServlet extends HttpServlet {
 
             req.setAttribute("ongoingMatch", ongoingMatch);
             req.setAttribute("uuid", uuid);
-            req.getRequestDispatcher("WEB-INF/jsp/match.jsp").forward(req, resp);
+            req.getRequestDispatcher("WEB-INF/jsp/match-score.jsp").forward(req, resp);
 
         } catch (IllegalArgumentException e) {
             req.setAttribute("errorMessage", e.getMessage());

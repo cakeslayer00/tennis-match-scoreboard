@@ -24,11 +24,11 @@ public class NewMatchServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         SessionFactory sessionFactory = (SessionFactory)
-                config.getServletContext().getAttribute("hibernateSessionFactory");
+                getServletContext().getAttribute("hibernateSessionFactory");
 
         PlayerDao playerDao = new PlayerDao(sessionFactory);
         OngoingMatchDao ongoingMatchDao = (OngoingMatchDao)
-                config.getServletContext().getAttribute("ongoingMatchDao");
+                getServletContext().getAttribute("ongoingMatchDao");
         newMatchService = new NewMatchService(playerDao, ongoingMatchDao);
     }
 
@@ -48,7 +48,7 @@ public class NewMatchServlet extends HttpServlet {
                 .secondPlayerName(secondPlayerName)
                 .build();
 
-        newMatchService.beginNewMatch(uuid, requestDto);
+        newMatchService.startNewMatch(uuid, requestDto);
         resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + uuid);
     }
 
