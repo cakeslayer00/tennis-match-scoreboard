@@ -1,7 +1,7 @@
 package com.vladsv.tennismatchscoreboard.servlet;
 
-import com.vladsv.tennismatchscoreboard.dao.OngoingMatchDao;
-import com.vladsv.tennismatchscoreboard.dao.PlayerDao;
+import com.vladsv.tennismatchscoreboard.dao.impl.OngoingMatchDao;
+import com.vladsv.tennismatchscoreboard.dao.impl.PlayerDao;
 import com.vladsv.tennismatchscoreboard.dto.NewMatchRequestDto;
 import com.vladsv.tennismatchscoreboard.service.NewMatchService;
 import jakarta.servlet.ServletConfig;
@@ -18,16 +18,18 @@ import java.util.UUID;
 @WebServlet(value = "/new-match")
 public class NewMatchServlet extends HttpServlet {
 
-    private NewMatchService service;
+    private NewMatchService newMatchService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        SessionFactory sessionFactory = (SessionFactory) getServletContext().getAttribute("hibernateSessionFactory");
+        SessionFactory sessionFactory = (SessionFactory)
+                config.getServletContext().getAttribute("hibernateSessionFactory");
 
         PlayerDao playerDao = new PlayerDao(sessionFactory);
-        OngoingMatchDao ongoingMatchDao = (OngoingMatchDao) getServletContext().getAttribute("ongoingMatchDao");
-        service = new NewMatchService(playerDao, ongoingMatchDao);
+        OngoingMatchDao ongoingMatchDao = (OngoingMatchDao)
+                config.getServletContext().getAttribute("ongoingMatchDao");
+        newMatchService = new NewMatchService(playerDao, ongoingMatchDao);
     }
 
     @Override
@@ -46,8 +48,8 @@ public class NewMatchServlet extends HttpServlet {
                 .secondPlayerName(secondPlayerName)
                 .build();
 
-        service.initiateNewMatch(uuid, requestDto);
-        resp.sendRedirect("/match-score?uuid=" + uuid);
+        newMatchService.beginNewMatch(uuid, requestDto);
+        resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + uuid);
     }
 
 }

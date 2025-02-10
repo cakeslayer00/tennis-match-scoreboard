@@ -1,6 +1,6 @@
-package com.vladsv.tennismatchscoreboard.dao;
+package com.vladsv.tennismatchscoreboard.dao.impl;
 
-import com.vladsv.tennismatchscoreboard.model.FinishedMatch;
+import com.vladsv.tennismatchscoreboard.dao.Dao;
 import com.vladsv.tennismatchscoreboard.model.Player;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

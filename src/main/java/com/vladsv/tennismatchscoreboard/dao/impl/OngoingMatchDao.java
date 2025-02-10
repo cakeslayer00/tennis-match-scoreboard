@@ -1,5 +1,6 @@
-package com.vladsv.tennismatchscoreboard.dao;
+package com.vladsv.tennismatchscoreboard.dao.impl;
 
+import com.vladsv.tennismatchscoreboard.dao.Dao;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import lombok.RequiredArgsConstructor;
 

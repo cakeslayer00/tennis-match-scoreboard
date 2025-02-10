@@ -1,12 +1,11 @@
 package com.vladsv.tennismatchscoreboard.service;
 
-import com.vladsv.tennismatchscoreboard.dao.OngoingMatchDao;
-import com.vladsv.tennismatchscoreboard.dao.PlayerDao;
+import com.vladsv.tennismatchscoreboard.dao.impl.OngoingMatchDao;
+import com.vladsv.tennismatchscoreboard.dao.impl.PlayerDao;
 import com.vladsv.tennismatchscoreboard.dto.NewMatchRequestDto;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import com.vladsv.tennismatchscoreboard.model.Player;
 import com.vladsv.tennismatchscoreboard.model.Score;
-import com.vladsv.tennismatchscoreboard.model.MatchState;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -18,7 +17,7 @@ public class NewMatchService {
     private final PlayerDao playerDao;
     private final OngoingMatchDao ongoingMatchDao;
 
-    public void initiateNewMatch(UUID matchId, NewMatchRequestDto requestDto) {
+    public void beginNewMatch(UUID matchId, NewMatchRequestDto requestDto) {
         String firstPlayerName = requestDto.getFirstPlayerName();
         String secondPlayerName = requestDto.getSecondPlayerName();
 
@@ -26,10 +25,8 @@ public class NewMatchService {
         Player secondPlayer = getExistingPlayer(secondPlayerName);
 
         OngoingMatch ongoingMatch = OngoingMatch.builder()
-                .firstPlayerId(firstPlayer.getId())
-                .secondPlayerId(secondPlayer.getId())
-                .matchState(MatchState.ONGOING)
-                .score(new Score())
+                .firstPlayer(firstPlayer)
+                .secondPlayer(secondPlayer)
                 .build();
 
         ongoingMatchDao.persist(matchId, ongoingMatch);

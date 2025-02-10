@@ -1,6 +1,6 @@
 package com.vladsv.tennismatchscoreboard.listener;
 
-import com.vladsv.tennismatchscoreboard.dao.OngoingMatchDao;
+import com.vladsv.tennismatchscoreboard.dao.impl.OngoingMatchDao;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
