@@ -4,6 +4,7 @@ import com.vladsv.tennismatchscoreboard.dao.impl.OngoingMatchDao;
 import com.vladsv.tennismatchscoreboard.dao.impl.PlayerDao;
 import com.vladsv.tennismatchscoreboard.dto.NewMatchRequestDto;
 import com.vladsv.tennismatchscoreboard.service.NewMatchService;
+import com.vladsv.tennismatchscoreboard.utils.Validator;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,17 +20,20 @@ import java.util.UUID;
 public class NewMatchServlet extends HttpServlet {
 
     private NewMatchService newMatchService;
+    private Validator validator;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+
         SessionFactory sessionFactory = (SessionFactory)
-                getServletContext().getAttribute("hibernateSessionFactory");
+                config.getServletContext().getAttribute("hibernateSessionFactory");
 
         PlayerDao playerDao = new PlayerDao(sessionFactory);
         OngoingMatchDao ongoingMatchDao = (OngoingMatchDao)
-                getServletContext().getAttribute("ongoingMatchDao");
+                config.getServletContext().getAttribute("ongoingMatchDao");
         newMatchService = new NewMatchService(playerDao, ongoingMatchDao);
+        validator = new Validator();
     }
 
     @Override
@@ -37,16 +41,12 @@ public class NewMatchServlet extends HttpServlet {
         String firstPlayerName = req.getParameter("firstPlayer").toLowerCase();
         String secondPlayerName = req.getParameter("secondPlayer").toLowerCase();
 
-        if (firstPlayerName.equals(secondPlayerName)) {
-            req.setAttribute("error", "Player names cannot be the same!");
-            req.getRequestDispatcher("index.jsp").forward(req, resp);
-        }
+        validator.validatePlayerNames(req, resp, firstPlayerName, secondPlayerName);
 
         UUID uuid = UUID.randomUUID();
         NewMatchRequestDto requestDto = NewMatchRequestDto.builder()
                 .firstPlayerName(firstPlayerName)
-                .secondPlayerName(secondPlayerName)
-                .build();
+                .secondPlayerName(secondPlayerName).build();
 
         newMatchService.startNewMatch(uuid, requestDto);
         resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + uuid);

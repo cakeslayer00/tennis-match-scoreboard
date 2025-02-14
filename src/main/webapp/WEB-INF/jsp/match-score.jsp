@@ -17,18 +17,10 @@
         <th>action</th>
     </tr>
     <tr>
-        <td>${requestScope.ongoingMatch.firstPlayer.name}</td>
+        <td>${requestScope.ongoingMatch.firstPlayerName}</td>
         <td>${requestScope.ongoingMatch.firstPlayerScore.sets}</td>
         <td>${requestScope.ongoingMatch.firstPlayerScore.games}</td>
-        <td>
-            <c:choose>
-                <c:when test="${requestScope.ongoingMatch.tieBreak}">
-                    <c:out value="${requestScope.ongoingMatch.firstPlayerScore.tieBreakCounter}"/>
-                </c:when>
-                <c:otherwise>
-                    <c:out value="${requestScope.ongoingMatch.firstPlayerScore.point}"/>
-                </c:otherwise>
-            </c:choose>
+        <td>${requestScope.ongoingMatch.firstPlayerScore.points}
         </td>
         <td>
             <form action="${pageContext.request.contextPath}/match-score" method="post">
@@ -39,18 +31,10 @@
         </td>
     </tr>
     <tr>
-        <td>${requestScope.ongoingMatch.secondPlayer.name}</td>
+        <td>${requestScope.ongoingMatch.secondPlayerName}</td>
         <td>${requestScope.ongoingMatch.secondPlayerScore.sets}</td>
         <td>${requestScope.ongoingMatch.secondPlayerScore.games}</td>
-        <td>
-            <c:choose>
-                <c:when test="${requestScope.ongoingMatch.tieBreak}">
-                    <c:out value="${requestScope.ongoingMatch.secondPlayerScore.tieBreakCounter}"/>
-                </c:when>
-                <c:otherwise>
-                    <c:out value="${requestScope.ongoingMatch.secondPlayerScore.point}"/>
-                </c:otherwise>
-            </c:choose>
+        <td>${requestScope.ongoingMatch.secondPlayerScore.points}
         </td>
         <td>
             <form action="${pageContext.request.contextPath}/match-score" method="post">

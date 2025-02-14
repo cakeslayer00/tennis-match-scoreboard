@@ -11,7 +11,7 @@ public class OngoingMatch {
 
     private Player firstPlayer;
     private Player secondPlayer;
-    private Long winnerPlayerId;
+    private Player winnerPlayer;
     @Builder.Default
     private MatchState matchState = MatchState.DEFAULT;
     @Builder.Default
@@ -29,7 +29,7 @@ public class OngoingMatch {
 
     public boolean isTieBreak() {
         return firstPlayerScore.getGames() == secondPlayerScore.getGames()
-                && firstPlayerScore.getGames() == GAMES_TO_TIE_BREAK;
+                && firstPlayerScore.getGames() >= GAMES_TO_TIE_BREAK;
     }
 
     public boolean isDeuce() {

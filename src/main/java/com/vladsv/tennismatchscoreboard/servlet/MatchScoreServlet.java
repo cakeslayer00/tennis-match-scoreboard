@@ -6,6 +6,7 @@ import com.vladsv.tennismatchscoreboard.dto.OngoingMatchViewDto;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import com.vladsv.tennismatchscoreboard.service.FinishedMatchService;
 import com.vladsv.tennismatchscoreboard.service.MatchScoreCalculationService;
+import com.vladsv.tennismatchscoreboard.utils.CustomizedMapper;
 import com.vladsv.tennismatchscoreboard.utils.Validator;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -14,8 +15,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.SessionFactory;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -65,6 +64,7 @@ public class MatchScoreServlet extends HttpServlet {
         }
     }
 
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -76,17 +76,22 @@ public class MatchScoreServlet extends HttpServlet {
                     () -> new RuntimeException("Match with current id doesn't exist")
             );
 
-            calculationService.updateState(ongoingMatch);
-            calculationService.updateScore(ongoingMatch, winnerId);
+            calculationService.updateMatchState(ongoingMatch);
+            calculationService.updateMatchScore(ongoingMatch, winnerId);
 
             if (ongoingMatch.isMatchFinished()) {
-                ongoingMatch.setWinnerPlayerId(Long.valueOf(winnerId));
+                ongoingMatch.setWinnerPlayer(
+                        calculationService.getWinnerInstance(ongoingMatch, winnerId)
+                );
                 finishedMatchService.proceedMatch(ongoingMatch);
                 ongoingMatchDao.delete(matchId);
 
                 req.getRequestDispatcher("WEB-INF/jsp/result.jsp").forward(req, resp);
             } else {
-                resp.sendRedirect("/match-score?uuid=" + matchId);
+                req.setAttribute("ongoingMatch", ongoingMatch);
+                req.setAttribute("uuid", matchId);
+                req.getRequestDispatcher("WEB-INF/jsp/match-score.jsp").forward(req, resp);
+                //TODO:IS THIS BETTER THAN REDIRECT THOUGH?
             }
 
         } catch (IllegalArgumentException e) {
