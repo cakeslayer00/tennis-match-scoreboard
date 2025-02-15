@@ -9,8 +9,9 @@ import lombok.*;
 @Builder
 public class ScoreViewDto {
 
-    private String point;
-    private int games;
     private int sets;
+    private int games;
+    private String point;
+    private int tieBreakCounter;
 
 }

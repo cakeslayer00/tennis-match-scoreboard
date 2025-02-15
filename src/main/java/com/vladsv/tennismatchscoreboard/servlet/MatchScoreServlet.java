@@ -6,7 +6,6 @@ import com.vladsv.tennismatchscoreboard.dto.OngoingMatchViewDto;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import com.vladsv.tennismatchscoreboard.service.FinishedMatchService;
 import com.vladsv.tennismatchscoreboard.service.MatchScoreCalculationService;
-import com.vladsv.tennismatchscoreboard.utils.CustomizedMapper;
 import com.vladsv.tennismatchscoreboard.utils.Validator;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -15,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.SessionFactory;
+import org.modelmapper.ModelMapper;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -28,21 +28,23 @@ public class MatchScoreServlet extends HttpServlet {
     private OngoingMatchDao ongoingMatchDao;
 
     private Validator validator;
+    private ModelMapper modelMapper;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         SessionFactory sessionFactory = (SessionFactory)
-                getServletContext().getAttribute("hibernateSessionFactory");
+                config.getServletContext().getAttribute("hibernateSessionFactory");
 
         FinishedMatchDao finishedMatchDao = new FinishedMatchDao(sessionFactory);
         ongoingMatchDao = (OngoingMatchDao)
-                getServletContext().getAttribute("ongoingMatchDao");
+                config.getServletContext().getAttribute("ongoingMatchDao");
 
         calculationService = new MatchScoreCalculationService();
         finishedMatchService = new FinishedMatchService(finishedMatchDao);
 
         validator = new Validator();
+        modelMapper = new ModelMapper();
     }
 
     @Override
@@ -54,7 +56,7 @@ public class MatchScoreServlet extends HttpServlet {
                     () -> new IllegalArgumentException("Match with current id doesn't exist")
             );
 
-            req.setAttribute("ongoingMatch", ongoingMatch);
+            req.setAttribute("ongoingMatch", modelMapper.map(ongoingMatch, OngoingMatchViewDto.class));
             req.setAttribute("uuid", uuid);
             req.getRequestDispatcher("WEB-INF/jsp/match-score.jsp").forward(req, resp);
 
@@ -88,10 +90,10 @@ public class MatchScoreServlet extends HttpServlet {
 
                 req.getRequestDispatcher("WEB-INF/jsp/result.jsp").forward(req, resp);
             } else {
-                req.setAttribute("ongoingMatch", ongoingMatch);
+                req.setAttribute("ongoingMatch", modelMapper.map(ongoingMatch, OngoingMatchViewDto.class));
                 req.setAttribute("uuid", matchId);
                 req.getRequestDispatcher("WEB-INF/jsp/match-score.jsp").forward(req, resp);
-                //TODO:IS THIS BETTER THAN REDIRECT THOUGH?
+                //is this better that redirect though?
             }
 
         } catch (IllegalArgumentException e) {

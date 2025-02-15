@@ -1,5 +1,6 @@
 package com.vladsv.tennismatchscoreboard.dto;
 
+import com.vladsv.tennismatchscoreboard.model.Player;
 import lombok.*;
 
 @Getter
@@ -9,9 +10,10 @@ import lombok.*;
 @Builder
 public class OngoingMatchViewDto {
 
-    private String firstPlayerName;
-    private String secondPlayerName;
+    private Player firstPlayer;
+    private Player secondPlayer;
     private ScoreViewDto firstPlayerScore;
     private ScoreViewDto secondPlayerScore;
+    private boolean tieBreak;
 
 }
