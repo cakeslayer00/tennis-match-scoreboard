@@ -5,6 +5,7 @@ import com.vladsv.tennismatchscoreboard.dao.impl.OngoingMatchDao;
 import com.vladsv.tennismatchscoreboard.dto.OngoingMatchViewDto;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import com.vladsv.tennismatchscoreboard.service.FinishedMatchService;
+import com.vladsv.tennismatchscoreboard.service.MatchProcessingService;
 import com.vladsv.tennismatchscoreboard.service.MatchScoreCalculationService;
 import com.vladsv.tennismatchscoreboard.utils.Validator;
 import jakarta.servlet.ServletConfig;
@@ -22,8 +23,7 @@ import java.util.UUID;
 @WebServlet(value = "/match-score")
 public class MatchScoreServlet extends HttpServlet {
 
-    private MatchScoreCalculationService calculationService;
-    private FinishedMatchService finishedMatchService;
+    private MatchProcessingService matchProcessingService;
 
     private OngoingMatchDao ongoingMatchDao;
 
@@ -40,8 +40,9 @@ public class MatchScoreServlet extends HttpServlet {
         ongoingMatchDao = (OngoingMatchDao)
                 config.getServletContext().getAttribute("ongoingMatchDao");
 
-        calculationService = new MatchScoreCalculationService();
-        finishedMatchService = new FinishedMatchService(finishedMatchDao);
+        MatchScoreCalculationService calculationService = new MatchScoreCalculationService();
+        FinishedMatchService finishedMatchService = new FinishedMatchService(finishedMatchDao);
+        matchProcessingService = new MatchProcessingService(calculationService, finishedMatchService, ongoingMatchDao);
 
         validator = new Validator();
         modelMapper = new ModelMapper();
@@ -51,16 +52,17 @@ public class MatchScoreServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
 
-            UUID uuid = UUID.fromString(req.getParameter("uuid"));
-            OngoingMatch ongoingMatch = ongoingMatchDao.findById(uuid).orElseThrow(
+            UUID matchId = validator.getValidUuid(req.getParameter("uuid"));
+            OngoingMatch ongoingMatch = ongoingMatchDao.findById(matchId).orElseThrow(
                     () -> new IllegalArgumentException("Match with current id doesn't exist")
             );
 
             req.setAttribute("ongoingMatch", modelMapper.map(ongoingMatch, OngoingMatchViewDto.class));
-            req.setAttribute("uuid", uuid);
+            req.setAttribute("uuid", matchId);
             req.getRequestDispatcher("WEB-INF/jsp/match-score.jsp").forward(req, resp);
 
         } catch (IllegalArgumentException e) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             req.setAttribute("errorMessage", e.getMessage());
             req.getRequestDispatcher("WEB-INF/jsp/error.jsp").forward(req, resp);
         }
@@ -71,32 +73,20 @@ public class MatchScoreServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
 
-            UUID matchId = UUID.fromString(req.getParameter("uuid"));
-            String winnerId = validator.getValidatedWinnerId(req.getParameter("winnerId"));
+            UUID matchId = validator.getValidUuid(req.getParameter("uuid"));
+            String winnerId = validator.getValidWinnerId(req.getParameter("winnerId"));
 
-            OngoingMatch ongoingMatch = ongoingMatchDao.findById(matchId).orElseThrow(
-                    () -> new RuntimeException("Match with current id doesn't exist")
-            );
+            OngoingMatch processedMatch = matchProcessingService.getProcessedMatch(matchId, winnerId);
 
-            calculationService.updateMatchState(ongoingMatch);
-            calculationService.updateMatchScore(ongoingMatch, winnerId);
-
-            if (ongoingMatch.isMatchFinished()) {
-                ongoingMatch.setWinnerPlayer(
-                        calculationService.getWinnerInstance(ongoingMatch, winnerId)
-                );
-                finishedMatchService.proceedMatch(ongoingMatch);
-                ongoingMatchDao.delete(matchId);
-
-                req.getRequestDispatcher("WEB-INF/jsp/result.jsp").forward(req, resp);
+            if (processedMatch.isMatchFinished()) {
+                req.setAttribute("ongoingMatch", modelMapper.map(processedMatch, OngoingMatchViewDto.class));
+                req.getRequestDispatcher("WEB-INF/jsp/match-result.jsp").forward(req, resp);
             } else {
-                req.setAttribute("ongoingMatch", modelMapper.map(ongoingMatch, OngoingMatchViewDto.class));
-                req.setAttribute("uuid", matchId);
-                req.getRequestDispatcher("WEB-INF/jsp/match-score.jsp").forward(req, resp);
-                //is this better that redirect though?
+                resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + matchId);
             }
 
         } catch (IllegalArgumentException e) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             req.setAttribute("errorMessage", e.getMessage());
             req.getRequestDispatcher("WEB-INF/jsp/error.jsp").forward(req, resp);
         }

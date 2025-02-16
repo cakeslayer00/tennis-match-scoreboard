@@ -10,7 +10,13 @@ import static com.vladsv.tennismatchscoreboard.model.OngoingMatch.GAMES_TO_TIE_B
 @RequiredArgsConstructor
 public class MatchScoreCalculationService {
 
-    public void updateMatchState(OngoingMatch ongoingMatch) {
+    public void updateMatchScore(OngoingMatch ongoingMatch, String winnerId) {
+        updateMatchState(ongoingMatch);
+
+        processPoint(ongoingMatch, winnerId);
+    }
+
+    private void updateMatchState(OngoingMatch ongoingMatch) {
         if (ongoingMatch.isDeuce()) {
             ongoingMatch.setMatchState(MatchState.DEUCE);
         } else if (ongoingMatch.isTieBreak()) {
@@ -20,7 +26,7 @@ public class MatchScoreCalculationService {
         }
     }
 
-    public void updateMatchScore(OngoingMatch ongoingMatch, String winnerId) {
+    private void processPoint(OngoingMatch ongoingMatch, String winnerId) {
         Score winnerScore = getWinnerScore(ongoingMatch, winnerId);
         Score loserScore = getLoserScore(ongoingMatch, winnerId);
 
