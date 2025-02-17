@@ -37,19 +37,32 @@ public class NewMatchServlet extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/WEB-INF/jsp/new-match.jsp").forward(req, resp);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String firstPlayerName = req.getParameter("firstPlayer").toLowerCase();
-        String secondPlayerName = req.getParameter("secondPlayer").toLowerCase();
+        try {
 
-        validator.validatePlayerNames(req, resp, firstPlayerName, secondPlayerName);
+            String firstPlayerName = validator.getValidPlayerName(req.getParameter("firstPlayer"));
+            String secondPlayerName = validator.getValidPlayerName(req.getParameter("secondPlayer"));
 
-        UUID uuid = UUID.randomUUID();
-        NewMatchRequestDto requestDto = NewMatchRequestDto.builder()
-                .firstPlayerName(firstPlayerName)
-                .secondPlayerName(secondPlayerName).build();
+            validator.checkForUniqueNames(firstPlayerName, secondPlayerName);
 
-        newMatchService.startNewMatch(uuid, requestDto);
-        resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + uuid);
+            UUID uuid = UUID.randomUUID();
+            NewMatchRequestDto requestDto = NewMatchRequestDto.builder()
+                    .firstPlayerName(firstPlayerName)
+                    .secondPlayerName(secondPlayerName).build();
+
+            newMatchService.startNewMatch(uuid, requestDto);
+            resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + uuid);
+
+        } catch (IllegalArgumentException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            req.setAttribute("errorMessage", e.getMessage());
+            req.getRequestDispatcher("WEB-INF/jsp/error.jsp").forward(req, resp);
+        }
     }
 
 }

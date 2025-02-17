@@ -12,43 +12,15 @@
     <title>Match Results</title>
 </head>
 <body>
-<table>
-    <tr>
-        <th>player name</th>
-        <th>set</th>
-        <th>game</th>
-        <th>point</th>
-    </tr>
-    <tr>
-        <td>${requestScope.ongoingMatch.firstPlayer.name}</td>
-        <td>${requestScope.ongoingMatch.firstPlayerScore.sets}</td>
-        <td>${requestScope.ongoingMatch.firstPlayerScore.games}</td>
-        <td>
-            <c:choose>
-                <c:when test="${requestScope.ongoingMatch.tieBreak}">
-                    <c:out value="${requestScope.ongoingMatch.firstPlayerScore.tieBreakCounter}"/>
-                </c:when>
-                <c:otherwise>
-                    <c:out value="${requestScope.ongoingMatch.firstPlayerScore.point}"/>
-                </c:otherwise>
-            </c:choose>
-        </td>
-    </tr>
-    <tr>
-        <td>${requestScope.ongoingMatch.secondPlayer.name}</td>
-        <td>${requestScope.ongoingMatch.secondPlayerScore.sets}</td>
-        <td>${requestScope.ongoingMatch.secondPlayerScore.games}</td>
-        <td>
-            <c:choose>
-                <c:when test="${requestScope.ongoingMatch.tieBreak}">
-                    <c:out value="${requestScope.ongoingMatch.secondPlayerScore.tieBreakCounter}"/>
-                </c:when>
-                <c:otherwise>
-                    <c:out value="${requestScope.ongoingMatch.secondPlayerScore.point}"/>
-                </c:otherwise>
-            </c:choose>
-        </td>
-    </tr>
-</table>
+<label>
+    Winner is ${requestScope.winnerName}<br>
+    <form action="${pageContext.request.contextPath}/matches" method="get">
+        <input type="hidden" name="page" value="1">
+        <input type="hidden" name="filter_by_player_name" value="">
+        <button type="submit">Matches</button>
+        <br>
+    </form>
+</label>
+
 </body>
 </html>

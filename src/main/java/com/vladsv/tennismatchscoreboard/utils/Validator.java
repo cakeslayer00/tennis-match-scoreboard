@@ -1,8 +1,6 @@
 package com.vladsv.tennismatchscoreboard.utils;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -23,11 +21,30 @@ public class Validator {
         return UUID.fromString(uuid);
     }
 
-    public void validatePlayerNames(HttpServletRequest req, HttpServletResponse resp, String firstPlayerName, String secondPlayerName) throws ServletException, IOException {
-        if (firstPlayerName.equals(secondPlayerName)) {
-            req.setAttribute("error", "Player names cannot be the same!");
-            req.getRequestDispatcher("index.jsp").forward(req, resp);
+    public String getValidPageNumber(String page) {
+        if (!page.matches("[0-9]")) {
+            throw new IllegalArgumentException("Invalid page number");
         }
+        return page;
     }
 
+    public String getValidPlayerName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Missing player name");
+        }
+        return name;
+    }
+
+    public String getValidFilterName(String filterByPlayerName) {
+        if (filterByPlayerName == null) {
+            throw new IllegalArgumentException("Null is not a valid filter by player");
+        }
+        return filterByPlayerName;
+    }
+
+    public void checkForUniqueNames(String firstPlayerName, String secondPlayerName) {
+        if (firstPlayerName.equals(secondPlayerName)) {
+            throw new IllegalArgumentException("Duplicate player names");
+        }
+    }
 }

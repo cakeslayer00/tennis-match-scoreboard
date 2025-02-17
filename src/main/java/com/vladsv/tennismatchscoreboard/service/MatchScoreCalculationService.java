@@ -12,7 +12,6 @@ public class MatchScoreCalculationService {
 
     public void updateMatchScore(OngoingMatch ongoingMatch, String winnerId) {
         updateMatchState(ongoingMatch);
-
         processPoint(ongoingMatch, winnerId);
     }
 

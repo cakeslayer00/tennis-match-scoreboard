@@ -1,3 +1,6 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,21 +9,20 @@
     <title>Player Names Form</title>
 </head>
 <body>
-<h1>Enter Player Names</h1>
+<h1>Enter player names</h1>
 
 <form action="${pageContext.request.contextPath}/new-match" method="POST">
     <label for="playerOne">Player one:</label>
-    <input type="text" id="playerOne" name="firstPlayer" placeholder="Amigo" required>
+    <input type="text" id="playerOne" name="firstPlayer" placeholder="Blue Heavy" required>
     <br>
     <label for="playerTwo">Player two:</label>
-    <input type="text" id="playerTwo" name="secondPlayer" placeholder="Pedro" required>
+    <input type="text" id="playerTwo" name="secondPlayer" placeholder="Red Heavy" required>
     <br>
     <input type="submit" value="Submit">
 </form>
 
-<% if (request.getAttribute("error") != null) { %>
-<p style="color: #ff0000;"><%= request.getAttribute("error") %>
-</p>
-<% } %>
+<c:if test="${requestScope.error != null}">
+    <p style="color: #ff0000;">${requestScope.error}</p>
+</c:if>
 </body>
 </html>

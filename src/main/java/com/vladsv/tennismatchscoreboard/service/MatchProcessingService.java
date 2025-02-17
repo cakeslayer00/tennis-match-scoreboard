@@ -1,8 +1,11 @@
 package com.vladsv.tennismatchscoreboard.service;
 
+import com.vladsv.tennismatchscoreboard.dao.impl.FinishedMatchDao;
 import com.vladsv.tennismatchscoreboard.dao.impl.OngoingMatchDao;
+import com.vladsv.tennismatchscoreboard.model.FinishedMatch;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 import java.util.UUID;
 
@@ -10,8 +13,9 @@ import java.util.UUID;
 public class MatchProcessingService {
 
     private final MatchScoreCalculationService calculationService;
-    private final FinishedMatchService finishedMatchService;
     private final OngoingMatchDao ongoingMatchDao;
+    private final FinishedMatchDao finishedMatchDao;
+    private final ModelMapper mapper = new ModelMapper();
 
     public OngoingMatch getProcessedMatch(UUID matchId, String winnerId) {
         OngoingMatch ongoingMatch = ongoingMatchDao.findById(matchId).orElseThrow(
@@ -21,14 +25,16 @@ public class MatchProcessingService {
         calculationService.updateMatchScore(ongoingMatch, winnerId);
 
         if (ongoingMatch.isMatchFinished()) {
-            ongoingMatch.setWinnerPlayer(
-                    calculationService.getWinnerInstance(ongoingMatch, winnerId)
-            );
-            finishedMatchService.mapToFinished(ongoingMatch);
+            ongoingMatch.setWinnerPlayer(calculationService.getWinnerInstance(ongoingMatch, winnerId));
+            finishedMatchDao.persist(mapToFinished(ongoingMatch));
             ongoingMatchDao.delete(matchId);
         }
 
         return ongoingMatch;
+    }
+
+    private FinishedMatch mapToFinished(OngoingMatch ongoingMatch) {
+        return mapper.map(ongoingMatch, FinishedMatch.class);
     }
 
 }

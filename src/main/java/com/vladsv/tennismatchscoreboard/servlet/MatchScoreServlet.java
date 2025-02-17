@@ -4,7 +4,6 @@ import com.vladsv.tennismatchscoreboard.dao.impl.FinishedMatchDao;
 import com.vladsv.tennismatchscoreboard.dao.impl.OngoingMatchDao;
 import com.vladsv.tennismatchscoreboard.dto.OngoingMatchViewDto;
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
-import com.vladsv.tennismatchscoreboard.service.FinishedMatchService;
 import com.vladsv.tennismatchscoreboard.service.MatchProcessingService;
 import com.vladsv.tennismatchscoreboard.service.MatchScoreCalculationService;
 import com.vladsv.tennismatchscoreboard.utils.Validator;
@@ -41,8 +40,10 @@ public class MatchScoreServlet extends HttpServlet {
                 config.getServletContext().getAttribute("ongoingMatchDao");
 
         MatchScoreCalculationService calculationService = new MatchScoreCalculationService();
-        FinishedMatchService finishedMatchService = new FinishedMatchService(finishedMatchDao);
-        matchProcessingService = new MatchProcessingService(calculationService, finishedMatchService, ongoingMatchDao);
+        matchProcessingService = new MatchProcessingService(
+                calculationService,
+                ongoingMatchDao,
+                finishedMatchDao);
 
         validator = new Validator();
         modelMapper = new ModelMapper();
@@ -68,7 +69,6 @@ public class MatchScoreServlet extends HttpServlet {
         }
     }
 
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -79,7 +79,7 @@ public class MatchScoreServlet extends HttpServlet {
             OngoingMatch processedMatch = matchProcessingService.getProcessedMatch(matchId, winnerId);
 
             if (processedMatch.isMatchFinished()) {
-                req.setAttribute("ongoingMatch", modelMapper.map(processedMatch, OngoingMatchViewDto.class));
+                req.setAttribute("winnerName", processedMatch.getWinnerPlayer().getName());
                 req.getRequestDispatcher("WEB-INF/jsp/match-result.jsp").forward(req, resp);
             } else {
                 resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + matchId);
