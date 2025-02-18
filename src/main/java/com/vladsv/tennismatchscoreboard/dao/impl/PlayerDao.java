@@ -17,9 +17,7 @@ public class PlayerDao implements Dao<Player> {
 
     @Override
     public void persist(Player player) {
-        sessionFactory.inTransaction(session -> {
-            session.persist(player);
-        });
+        sessionFactory.inTransaction(session -> session.persist(player));
     }
 
     @Override
@@ -29,21 +27,23 @@ public class PlayerDao implements Dao<Player> {
                 .setParameter("id", id)
                 .uniqueResult();
 
+        session.close();
         return Optional.ofNullable(player);
     }
 
     @Override
     public List<Player> findAll() {
         Session session = sessionFactory.openSession();
-        return session.
+        List<Player> res = session.
                 createSelectionQuery("from Player", Player.class).getResultList();
+
+        session.close();
+        return res;
     }
 
     @Override
     public void delete(Player player) {
-        sessionFactory.inTransaction(session -> {
-            session.remove(player);
-        });
+        sessionFactory.inTransaction(session -> session.remove(player));
     }
 
     public Optional<Player> findByName(String name) {
@@ -52,6 +52,7 @@ public class PlayerDao implements Dao<Player> {
                 .setParameter("name", name)
                 .uniqueResult();
 
+        session.close();
         return Optional.ofNullable(player);
     }
 

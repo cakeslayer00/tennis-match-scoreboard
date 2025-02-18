@@ -8,7 +8,6 @@ import org.hibernate.query.SelectionQuery;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Queue;
 
 public class FinishedMatchDao implements Dao<FinishedMatch> {
 
@@ -20,9 +19,7 @@ public class FinishedMatchDao implements Dao<FinishedMatch> {
 
     @Override
     public void persist(FinishedMatch match) {
-        sessionFactory.inTransaction(session -> {
-            session.persist(match);
-        });
+        sessionFactory.inTransaction(session -> session.persist(match));
     }
 
     @Override
@@ -32,41 +29,73 @@ public class FinishedMatchDao implements Dao<FinishedMatch> {
                 .setParameter("id", id)
                 .uniqueResult();
 
+        session.close();
         return Optional.ofNullable(match);
     }
 
     @Override
     public List<FinishedMatch> findAll() {
         Session session = sessionFactory.openSession();
-        return session.
+        List<FinishedMatch> res = session.
                 createSelectionQuery("from FinishedMatch", FinishedMatch.class).getResultList();
+        session.close();
+        return res;
     }
 
-    public List<FinishedMatch> findAllPaginated(int pageNo, int elementsPerPage) {
+    public List<FinishedMatch> findByPage(int pageNo, int elementsPerPage) {
         Session session = sessionFactory.openSession();
-        SelectionQuery<FinishedMatch> query = session.createSelectionQuery("from FinishedMatch", FinishedMatch.class)
-                .setFirstResult((pageNo - 1) * elementsPerPage)
-                .setMaxResults(elementsPerPage);
-        return applyPagination(pageNo, elementsPerPage, query).getResultList();
+        SelectionQuery<FinishedMatch> query = session.createSelectionQuery("from FinishedMatch", FinishedMatch.class);
+
+        List<FinishedMatch> res = applyPagination(pageNo, elementsPerPage, query).getResultList();
+
+        session.close();
+        return res;
     }
 
     public List<FinishedMatch> findByFilter(int pageNo, int elementsPerPage, String filterName) {
         Session session = sessionFactory.openSession();
-        String hqlString = "from FinishedMatch m where m.firstPlayer.name = :name or m.secondPlayer.name = :name";
+        String hqlString = "from FinishedMatch m " +
+                "where lower(m.firstPlayer.name) like lower(:name) " +
+                "or lower(m.secondPlayer.name) like lower(:name)";
 
         SelectionQuery<FinishedMatch> query = session.createSelectionQuery(hqlString, FinishedMatch.class)
-                .setParameter("name", filterName);
-        return applyPagination(pageNo,elementsPerPage,query).getResultList();
+                .setParameter("name", "%" + filterName + "%");
+
+        List<FinishedMatch> res = applyPagination(pageNo, elementsPerPage, query).getResultList();
+
+        session.close();
+        return res;
+    }
+
+    public long getMatchesCount() {
+        Session session = sessionFactory.openSession();
+        String hqlString = "select count(*) from FinishedMatch";
+        long res = session.createSelectionQuery(hqlString, Long.class).getResultCount();
+
+        session.close();
+        return res;
+    }
+
+    public long getFilteredMatchesCount(String filterName) {
+        Session session = sessionFactory.openSession();
+        String hqlString = "select count(*) from FinishedMatch m " +
+                "where lower(m.firstPlayer.name) like lower(:name) " +
+                "or lower(m.secondPlayer.name) like lower(:name)";
+
+        long res = session.createSelectionQuery(hqlString, Long.class)
+                .setParameter("name", "%" + filterName + "%").getResultCount();
+
+        session.close();
+        return res;
     }
 
     @Override
     public void delete(FinishedMatch match) {
-        sessionFactory.inTransaction(session -> {
-            session.remove(match);
-        });
+        sessionFactory.inTransaction(session -> session.remove(match));
     }
 
     private SelectionQuery<FinishedMatch> applyPagination(int pageNo, int elementsPerPage, SelectionQuery<FinishedMatch> query) {
         return query.setFirstResult((pageNo - 1) * elementsPerPage).setMaxResults(elementsPerPage);
     }
+
 }

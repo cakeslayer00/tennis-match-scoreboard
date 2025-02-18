@@ -38,10 +38,16 @@ public class FinishedMatchesServlet extends HttpServlet {
             String page = validator.getValidPageNumber(req.getParameter("page"));
             String filter = validator.getValidFilterName(req.getParameter("filter_by_player_name"));
 
+            long matchesCount = filter.isEmpty()
+                    ? finishedMatchDao.getMatchesCount()
+                    : finishedMatchDao.getFilteredMatchesCount(filter);
+            validator.verifyPageNumber(matchesCount, page, 6);
+
             List<FinishedMatch> matches = filter.isEmpty()
-                    ? finishedMatchDao.findAllPaginated(Integer.parseInt(page), 6)
+                    ? finishedMatchDao.findByPage(Integer.parseInt(page), 6)
                     : finishedMatchDao.findByFilter(Integer.parseInt(page), 6, filter);
 
+            req.setAttribute("pageCount", (int) Math.ceil(matchesCount / (double) 6));
             req.setAttribute("matches", matches);
             req.getRequestDispatcher("/WEB-INF/jsp/matches.jsp").forward(req, resp);
 

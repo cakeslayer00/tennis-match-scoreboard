@@ -33,7 +33,7 @@
 <form class="pagination-form" action="${pageContext.request.contextPath}/matches" method="get">
     <label for="filter">Filter by name:</label>
     <input type="text" id="filter" name="filter_by_player_name" value="${param.filter_by_player_name}">
-    <input type="hidden" name="page" value="${empty param.page ? 1 : param.page}">
+    <input type="hidden" name="page" value="1">
     <button type="submit">Apply Filter</button>
 </form>
 
@@ -64,12 +64,12 @@
         <button type="submit" ${page <= 1 ? 'disabled' : ''}>Previous</button>
     </form>
 
-    <span>Page ${page}</span>
+    <span>Page ${page} of ${requestScope.pageCount}</span>
 
     <form class="pagination-form" action="${pageContext.request.contextPath}/matches" method="get">
         <input type="hidden" name="page" value="${page + 1}">
         <input type="hidden" name="filter_by_player_name" value="${filter}">
-        <button type="submit">Next</button>
+        <button type="submit" ${page >= requestScope.pageCount ? 'disabled' : ''}>Next</button>
     </form>
 </div>
 </body>

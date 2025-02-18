@@ -1,8 +1,5 @@
 package com.vladsv.tennismatchscoreboard.utils;
 
-import jakarta.servlet.ServletException;
-
-import java.io.IOException;
 import java.util.UUID;
 
 public class Validator {
@@ -45,6 +42,12 @@ public class Validator {
     public void checkForUniqueNames(String firstPlayerName, String secondPlayerName) {
         if (firstPlayerName.equals(secondPlayerName)) {
             throw new IllegalArgumentException("Duplicate player names");
+        }
+    }
+
+    public void verifyPageNumber(long matchesCount, String page, int elementsPerPage) {
+        if (Integer.parseInt(page) > (int) Math.ceil(matchesCount / (double) elementsPerPage)) {
+            throw new IllegalArgumentException("Invalid page number");
         }
     }
 }
