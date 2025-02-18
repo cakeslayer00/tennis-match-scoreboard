@@ -19,6 +19,9 @@ import java.util.UUID;
 @WebServlet(value = "/new-match")
 public class NewMatchServlet extends HttpServlet {
 
+    private static final String NEW_MATCH_JSP_PATH = "/WEB-INF/jsp/new-match.jsp";
+    private static final String ERROR_JSP_PATH = "WEB-INF/jsp/error.jsp";
+
     private NewMatchService newMatchService;
     private Validator validator;
 
@@ -38,7 +41,7 @@ public class NewMatchServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/jsp/new-match.jsp").forward(req, resp);
+        req.getRequestDispatcher(NEW_MATCH_JSP_PATH).forward(req, resp);
     }
 
     @Override
@@ -61,7 +64,7 @@ public class NewMatchServlet extends HttpServlet {
         } catch (IllegalArgumentException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             req.setAttribute("errorMessage", e.getMessage());
-            req.getRequestDispatcher("WEB-INF/jsp/error.jsp").forward(req, resp);
+            req.getRequestDispatcher(ERROR_JSP_PATH).forward(req, resp);
         }
     }
 

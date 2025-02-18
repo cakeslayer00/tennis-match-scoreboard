@@ -22,6 +22,10 @@ import java.util.UUID;
 @WebServlet(value = "/match-score")
 public class MatchScoreServlet extends HttpServlet {
 
+    private static final String MATCH_RESULT_JSP_PATH = "WEB-INF/jsp/match-result.jsp";
+    private static final String MATCH_SCORE_JSP_PATH = "WEB-INF/jsp/match-score.jsp";
+    private static final String ERROR_JSP_PATH = "WEB-INF/jsp/error.jsp";
+
     private MatchProcessingService matchProcessingService;
 
     private OngoingMatchDao ongoingMatchDao;
@@ -60,12 +64,12 @@ public class MatchScoreServlet extends HttpServlet {
 
             req.setAttribute("ongoingMatch", modelMapper.map(ongoingMatch, OngoingMatchViewDto.class));
             req.setAttribute("uuid", matchId);
-            req.getRequestDispatcher("WEB-INF/jsp/match-score.jsp").forward(req, resp);
+            req.getRequestDispatcher(MATCH_SCORE_JSP_PATH).forward(req, resp);
 
         } catch (IllegalArgumentException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             req.setAttribute("errorMessage", e.getMessage());
-            req.getRequestDispatcher("WEB-INF/jsp/error.jsp").forward(req, resp);
+            req.getRequestDispatcher(ERROR_JSP_PATH).forward(req, resp);
         }
     }
 
@@ -80,7 +84,7 @@ public class MatchScoreServlet extends HttpServlet {
 
             if (processedMatch.isMatchFinished()) {
                 req.setAttribute("winnerName", processedMatch.getWinnerPlayer().getName());
-                req.getRequestDispatcher("WEB-INF/jsp/match-result.jsp").forward(req, resp);
+                req.getRequestDispatcher(MATCH_RESULT_JSP_PATH).forward(req, resp);
             } else {
                 resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + matchId);
             }
@@ -88,7 +92,7 @@ public class MatchScoreServlet extends HttpServlet {
         } catch (IllegalArgumentException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             req.setAttribute("errorMessage", e.getMessage());
-            req.getRequestDispatcher("WEB-INF/jsp/error.jsp").forward(req, resp);
+            req.getRequestDispatcher(ERROR_JSP_PATH).forward(req, resp);
         }
     }
 }

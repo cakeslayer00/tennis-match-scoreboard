@@ -4,6 +4,7 @@ import com.vladsv.tennismatchscoreboard.dao.Dao;
 import com.vladsv.tennismatchscoreboard.model.FinishedMatch;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Order;
 import org.hibernate.query.SelectionQuery;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public class FinishedMatchDao implements Dao<FinishedMatch> {
 
     public List<FinishedMatch> findByPage(int pageNo, int elementsPerPage) {
         Session session = sessionFactory.openSession();
-        SelectionQuery<FinishedMatch> query = session.createSelectionQuery("from FinishedMatch", FinishedMatch.class);
+        SelectionQuery<FinishedMatch> query = session.createSelectionQuery("from FinishedMatch f order by f.id desc", FinishedMatch.class);
 
         List<FinishedMatch> res = applyPagination(pageNo, elementsPerPage, query).getResultList();
 
@@ -56,7 +57,8 @@ public class FinishedMatchDao implements Dao<FinishedMatch> {
         Session session = sessionFactory.openSession();
         String hqlString = "from FinishedMatch m " +
                 "where lower(m.firstPlayer.name) like lower(:name) " +
-                "or lower(m.secondPlayer.name) like lower(:name)";
+                "or lower(m.secondPlayer.name) like lower(:name)" +
+                "order by m.id desc";
 
         SelectionQuery<FinishedMatch> query = session.createSelectionQuery(hqlString, FinishedMatch.class)
                 .setParameter("name", "%" + filterName + "%");

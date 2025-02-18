@@ -5,7 +5,7 @@ import java.util.UUID;
 public class Validator {
 
     public String getValidWinnerId(String id) {
-        if (!id.matches("[0-9]")) {
+        if (!id.matches("[0-9]+")) {
             throw new IllegalArgumentException("Invalid winner id");
         }
         return id;
@@ -19,7 +19,7 @@ public class Validator {
     }
 
     public String getValidPageNumber(String page) {
-        if (!page.matches("[0-9]")) {
+        if (!page.matches("[0-9]+")) {
             throw new IllegalArgumentException("Invalid page number");
         }
         return page;
@@ -45,8 +45,9 @@ public class Validator {
         }
     }
 
-    public void verifyPageNumber(long matchesCount, String page, int elementsPerPage) {
-        if (Integer.parseInt(page) > (int) Math.ceil(matchesCount / (double) elementsPerPage)) {
+    public void verifyPageNumber(String page, int quantityOfPages) {
+        if (quantityOfPages == 0) return;
+        if (Integer.parseInt(page) > quantityOfPages) {
             throw new IllegalArgumentException("Invalid page number");
         }
     }
