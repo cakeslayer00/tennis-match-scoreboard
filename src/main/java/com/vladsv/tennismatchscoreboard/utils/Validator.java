@@ -46,7 +46,7 @@ public class Validator {
     }
 
     public void verifyPageNumber(String page, int quantityOfPages) {
-        if (quantityOfPages == 0) return;
+        if (page.equals("1") && quantityOfPages == 0) return;
         if (Integer.parseInt(page) > quantityOfPages) {
             throw new IllegalArgumentException("Invalid page number");
         }

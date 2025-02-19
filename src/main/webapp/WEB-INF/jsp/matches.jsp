@@ -1,43 +1,26 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Matches Form</title>
-    <style>
-        .pagination-form {
-            display: inline;
-        }
-
-        .pagination-form button {
-            padding: 5px 10px;
-            margin: 0 5px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .pagination-form button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/styles.css">
 </head>
 <body>
 
 <h1>Matches Form</h1>
 
-<form class="pagination-form" action="${pageContext.request.contextPath}/matches" method="get">
-    <label for="filter">Filter by name:</label>
-    <input type="text" id="filter" name="filter_by_player_name" value="${param.filter_by_player_name}">
-    <input type="hidden" name="page" value="1">
-    <button type="submit">Apply Filter</button>
-</form>
+<div class="filter-area">
+    <form action="${pageContext.request.contextPath}/matches" method="get">
+        <label for="filter">Filter by name:</label>
+        <input type="text" id="filter" name="filter_by_player_name" value="${param.filter_by_player_name}">
+        <input type="hidden" name="page" value="1">
+        <button type="submit">Apply Filter</button>
+    </form>
+</div>
 
-<div>
+<div class="table-area">
     <c:set var="page" value="${empty param.page ? 1 : param.page}"/>
     <c:set var="filter" value="${param.filter_by_player_name}"/>
 
@@ -54,11 +37,12 @@
                 <td>${match.winner.name}</td>
             </tr>
         </c:forEach>
-
     </table>
+</div>
 
 
-    <form class="pagination-form" action="${pageContext.request.contextPath}/matches" method="get">
+<div class="pagination-area">
+    <form action="${pageContext.request.contextPath}/matches" method="get">
         <input type="hidden" name="page" value="${page - 1}">
         <input type="hidden" name="filter_by_player_name" value="${filter}">
         <button type="submit" ${page <= 1 ? 'disabled' : ''}>Previous</button>
@@ -66,7 +50,7 @@
 
     <span>Page ${page} of ${requestScope.pageCount}</span>
 
-    <form class="pagination-form" action="${pageContext.request.contextPath}/matches" method="get">
+    <form action="${pageContext.request.contextPath}/matches" method="get">
         <input type="hidden" name="page" value="${page + 1}">
         <input type="hidden" name="filter_by_player_name" value="${filter}">
         <button type="submit" ${page >= requestScope.pageCount ? 'disabled' : ''}>Next</button>
