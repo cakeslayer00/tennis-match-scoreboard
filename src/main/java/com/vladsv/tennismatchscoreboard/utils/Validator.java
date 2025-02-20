@@ -40,7 +40,7 @@ public class Validator {
     }
 
     public void checkForUniqueNames(String firstPlayerName, String secondPlayerName) {
-        if (firstPlayerName.equals(secondPlayerName)) {
+        if (firstPlayerName.equalsIgnoreCase(secondPlayerName)) {
             throw new IllegalArgumentException("Duplicate player names");
         }
     }

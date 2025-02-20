@@ -64,7 +64,7 @@ public class NewMatchServlet extends HttpServlet {
         } catch (IllegalArgumentException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             req.setAttribute("errorMessage", e.getMessage());
-            req.getRequestDispatcher(ERROR_JSP_PATH).forward(req, resp);
+            req.getRequestDispatcher(NEW_MATCH_JSP_PATH).forward(req, resp);
         }
     }
 

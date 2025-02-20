@@ -4,7 +4,6 @@ import com.vladsv.tennismatchscoreboard.dao.Dao;
 import com.vladsv.tennismatchscoreboard.model.FinishedMatch;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Order;
 import org.hibernate.query.SelectionQuery;
 
 import java.util.List;

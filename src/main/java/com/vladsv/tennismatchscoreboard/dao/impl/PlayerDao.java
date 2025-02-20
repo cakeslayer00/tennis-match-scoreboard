@@ -48,7 +48,7 @@ public class PlayerDao implements Dao<Player> {
 
     public Optional<Player> findByName(String name) {
         Session session = sessionFactory.openSession();
-        Player player = session.createSelectionQuery("from Player where name = :name", Player.class)
+        Player player = session.createSelectionQuery("from Player p where lower(p.name) = lower(:name) ", Player.class)
                 .setParameter("name", name)
                 .uniqueResult();
 
