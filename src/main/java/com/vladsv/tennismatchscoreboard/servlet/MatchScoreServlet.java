@@ -22,7 +22,7 @@ import java.util.UUID;
 @WebServlet(value = "/match-score")
 public class MatchScoreServlet extends HttpServlet {
 
-    private static final String MATCH_RESULT_JSP_PATH = "WEB-INF/jsp/match-result.jsp";
+    private static final String MATCH_RESULT_JSP_PATH = "index.jsp";
     private static final String MATCH_SCORE_JSP_PATH = "WEB-INF/jsp/match-score.jsp";
     private static final String ERROR_JSP_PATH = "WEB-INF/jsp/error.jsp";
 

@@ -15,34 +15,30 @@
 <h1>Matches</h1>
 
 <div class="common inter-font">
-    <div class="filter-area">
-        <form action="${pageContext.request.contextPath}/matches" method="get">
-            <label for="filter">Filter by name:</label>
-            <input type="text" id="filter" name="filter_by_player_name" placeholder="bananas" value="${param.filter_by_player_name}">
-            <input type="hidden" name="page" value="1">
-            <button type="submit">Apply Filter</button>
-        </form>
-    </div>
+    <form action="${pageContext.request.contextPath}/matches" method="get">
+        <label for="filter">Filter by name:</label>
+        <input type="text" id="filter" name="filter_by_player_name" placeholder="bananas" value="${param.filter_by_player_name}">
+        <input type="hidden" name="page" value="1">
+        <button type="submit">Apply Filter</button>
+    </form>
 
-    <div class="table-area">
-        <c:set var="page" value="${empty param.page ? 1 : param.page}"/>
-        <c:set var="filter" value="${param.filter_by_player_name}"/>
+    <c:set var="page" value="${empty param.page ? 1 : param.page}"/>
+    <c:set var="filter" value="${param.filter_by_player_name}"/>
 
-        <table>
+    <table>
+        <tr>
+            <th>PLAYER I</th>
+            <th>PLAYER II</th>
+            <th>WINNER</th>
+        </tr>
+        <c:forEach var="match" items="${requestScope.matches}">
             <tr>
-                <th>PLAYER I</th>
-                <th>PLAYER II</th>
-                <th>WINNER</th>
+                <td>${match.firstPlayer.name}</td>
+                <td>${match.secondPlayer.name}</td>
+                <td>${match.winner.name}</td>
             </tr>
-            <c:forEach var="match" items="${requestScope.matches}">
-                <tr>
-                    <td>${match.firstPlayer.name}</td>
-                    <td>${match.secondPlayer.name}</td>
-                    <td>${match.winner.name}</td>
-                </tr>
-            </c:forEach>
-        </table>
-    </div>
+        </c:forEach>
+    </table>
 
     <div class="pagination-area">
         <form action="${pageContext.request.contextPath}/matches" method="get">

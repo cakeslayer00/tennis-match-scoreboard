@@ -9,13 +9,13 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+          rel="stylesheet">
 </head>
 <body>
-
-<h1>Scoreboard:</h1>
 <div class="common inter-font">
-    <table class="table-area">
+    <h1>Scoreboard:</h1>
+    <table>
         <tr>
             <th>PLAYER</th>
             <th>SET</th>

@@ -15,7 +15,7 @@
 <body>
 <h1>New Match</h1>
 <div class="common inter-font">
-    <form class="player-form-area" action="${pageContext.request.contextPath}/new-match" method="POST">
+    <form action="${pageContext.request.contextPath}/new-match" method="POST">
         <label for="playerOne">Player one:</label>
         <input type="text" id="playerOne" name="firstPlayer" placeholder="Blue Heavy" required>
         <br>
