@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Match Scoreboard</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css?v=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
@@ -68,6 +68,14 @@
             </td>
         </tr>
     </table>
+    <div class="pagination-area">
+        <a href="${pageContext.request.contextPath}/" >
+            <button type="button">Home</button>
+        </a>
+        <a href="${pageContext.request.contextPath}/matches?page=1&filter_by_player_name=" >
+            <button type="button">Matches</button>
+        </a>
+    </div>
 </div>
 </body>
 </html>

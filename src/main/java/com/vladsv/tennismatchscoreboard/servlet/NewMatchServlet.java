@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.DataException;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -64,6 +65,10 @@ public class NewMatchServlet extends HttpServlet {
         } catch (IllegalArgumentException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             req.setAttribute("errorMessage", e.getMessage());
+            req.getRequestDispatcher(NEW_MATCH_JSP_PATH).forward(req, resp);
+        } catch (DataException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            req.setAttribute("errorMessage", "Name is too long");
             req.getRequestDispatcher(NEW_MATCH_JSP_PATH).forward(req, resp);
         }
     }

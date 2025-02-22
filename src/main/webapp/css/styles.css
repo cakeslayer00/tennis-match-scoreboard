@@ -1,5 +1,10 @@
 .common {
-
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .common button {
@@ -39,7 +44,7 @@
 
 .common button:hover {
     background: #F6F9FE;
-    color: #174ea6;
+    color: black;
 }
 
 .common button:active {
@@ -49,7 +54,7 @@
 
 .common button:focus {
     outline: none;
-    border: 2px solid #4285f4;
+    border: 2px solid #ffc057;
 }
 
 .common button:not(:disabled) {
@@ -74,20 +79,21 @@
 
 .common input {
     border: 1px solid #ddd;
-    padding: 10px;
+    padding: 6.6px;
     margin: 10px 0;
-    border-radius: 6px;
-    width: 250px;
+    border-radius: 10px;
+    width: 200px;
     outline: none;
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
+    color:#ff9400;
 }
 
 .common input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    border-color: #ffc057;
+    box-shadow: 0 0 10px #ffc057;
 }
 
 .common input::placeholder {
@@ -99,10 +105,40 @@
     color: transparent;
 }
 
+.common table {
+    border-collapse: collapse;
+    box-shadow: 0 0 0 3px #ffc057;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.common table, td, th {
+    text-align: center;
+}
+
+.common td, th {
+    padding: 10px;
+}
+.common th {
+    background: #ffe89f;
+}
+
+.new-match form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .pagination-area {
     display: flex;
-    gap: 10px;
+    gap: 20px;
     align-items: center;
+    margin: 10px;
+}
+
+.filtering-area {
+    margin-bottom: 4px;
 }
 
 .inter-font {
