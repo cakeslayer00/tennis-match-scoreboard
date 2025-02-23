@@ -60,7 +60,12 @@ public class NewMatchServlet extends HttpServlet {
                     .secondPlayerName(secondPlayerName).build();
 
             newMatchService.startNewMatch(uuid, requestDto);
-            resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + uuid);
+
+            if(validator.condition(firstPlayerName,secondPlayerName)) {
+                resp.sendRedirect("https://www.youtube.com/watch?v=xvFZjo5PgG0?autoplay=1&mute=1");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + uuid);
+            }
 
         } catch (IllegalArgumentException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

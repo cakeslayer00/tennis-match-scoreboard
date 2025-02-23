@@ -4,6 +4,11 @@ import java.util.UUID;
 
 public class Validator {
 
+    public boolean condition(String firstPlayerName, String secondPlayerName) {
+        return firstPlayerName.toLowerCase().contains("gay")
+                || secondPlayerName.toLowerCase().contains("gay");
+    }
+
     public String getValidWinnerId(String id) {
         if (!id.matches("[0-9]+")) {
             throw new IllegalArgumentException("Invalid winner id");
