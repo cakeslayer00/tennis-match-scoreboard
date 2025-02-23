@@ -1,6 +1,9 @@
 package com.vladsv.tennismatchscoreboard.service;
 
 import com.vladsv.tennismatchscoreboard.model.*;
+import com.vladsv.tennismatchscoreboard.model.score.MatchState;
+import com.vladsv.tennismatchscoreboard.model.score.Point;
+import com.vladsv.tennismatchscoreboard.model.score.Score;
 
 import java.util.Objects;
 

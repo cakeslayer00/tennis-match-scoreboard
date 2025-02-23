@@ -1,4 +1,4 @@
-package com.vladsv.tennismatchscoreboard.model;
+package com.vladsv.tennismatchscoreboard.model.score;
 
 public enum MatchState {
 

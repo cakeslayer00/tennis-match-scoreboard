@@ -2,7 +2,7 @@ package com.vladsv.tennismatchscoreboard.service;
 
 import com.vladsv.tennismatchscoreboard.model.OngoingMatch;
 import com.vladsv.tennismatchscoreboard.model.Player;
-import com.vladsv.tennismatchscoreboard.model.Point;
+import com.vladsv.tennismatchscoreboard.model.score.Point;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

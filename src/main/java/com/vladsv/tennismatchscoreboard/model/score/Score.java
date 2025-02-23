@@ -1,4 +1,4 @@
-package com.vladsv.tennismatchscoreboard.model;
+package com.vladsv.tennismatchscoreboard.model.score;
 
 import lombok.Getter;
 import lombok.Setter;

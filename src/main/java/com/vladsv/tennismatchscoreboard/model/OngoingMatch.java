@@ -1,5 +1,8 @@
 package com.vladsv.tennismatchscoreboard.model;
 
+import com.vladsv.tennismatchscoreboard.model.score.MatchState;
+import com.vladsv.tennismatchscoreboard.model.score.Point;
+import com.vladsv.tennismatchscoreboard.model.score.Score;
 import lombok.*;
 
 @Builder
@@ -12,6 +15,7 @@ public class OngoingMatch {
     private Player firstPlayer;
     private Player secondPlayer;
     private Player winnerPlayer;
+
     @Builder.Default
     private MatchState matchState = MatchState.DEFAULT;
     @Builder.Default
