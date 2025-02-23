@@ -1,1 +1,0 @@
-GET http://localhost:8080/matches?page=1&filter_by_player_name=z

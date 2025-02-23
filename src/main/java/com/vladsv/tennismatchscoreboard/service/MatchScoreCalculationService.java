@@ -1,13 +1,11 @@
 package com.vladsv.tennismatchscoreboard.service;
 
 import com.vladsv.tennismatchscoreboard.model.*;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
 
 import static com.vladsv.tennismatchscoreboard.model.OngoingMatch.GAMES_TO_TIE_BREAK;
 
-@RequiredArgsConstructor
 public class MatchScoreCalculationService {
 
     public void updateMatchScore(OngoingMatch ongoingMatch, String winnerId) {
