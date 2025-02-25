@@ -30,6 +30,7 @@ I hope will come later and add docker compose with dockerfile, so it will be 2 c
 # How to use the project
 
 After running the project go to http://localhost:8080 and start using
+Or you can go to this link to try it: [LINK](http://77.239.117.82:8080/)
 
 # Credits
 
